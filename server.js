@@ -18,9 +18,7 @@ mongoose.connect('mongodb://localhost:27017/quiz-app', {
 
 // 2. Middleware pour gérer les fichiers statiques (HTML, CSS, JS)
 app.use(express.static(__dirname)); // Sert les fichiers HTML/CSS/JS
-
 app.use(express.json()); // pour lire le JSON dans les requêtes POST
-
 app.use(session({
     secret: 'monSecret',
     resave: false,
@@ -32,33 +30,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.post('/submit', async (req, res) => {
-  try {
-    const { userId, answers, score, geolocation } = req.body;
-
-    const newResult = new Result({
-      userId,
-      answers,
-      score,
-      geolocation
-    });
-
-    await newResult.save();
-    res.status(200).json({ message: 'Résultat enregistré avec succès !' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Erreur lors de l’enregistrement.' });
-  }
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'register.html'));
 });
-
-
-// 4. Lancement du serveur
-app.listen(3000, () => {
-  console.log('Serveur démarré sur http://localhost:3000');
-});
-
-
-
 
 app.post('/register', async (req, res) => {
   const { email, nom, prenom, dateNaissance, sexe, etablissement, filiere, motDePasse, role } = req.body;
@@ -86,7 +60,27 @@ app.post('/register', async (req, res) => {
 });
 
 
+app.post('/submit', async (req, res) => {
+  try {
+    const { userId, answers, score, geolocation } = req.body;
 
-app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'register.html'));
+    const newResult = new Result({
+      userId,
+      answers,
+      score,
+      geolocation
+    });
+
+    await newResult.save();
+    res.status(200).json({ message: 'Résultat enregistré avec succès !' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erreur lors de l’enregistrement.' });
+  }
+});
+
+
+// 4. Lancement du serveur
+app.listen(3000, () => {
+  console.log('Serveur démarré sur http://localhost:3000');
 });
