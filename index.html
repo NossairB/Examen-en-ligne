@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Exam</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="quiz">
+    <p id="question-text"></p>
+    <input type="text" id="answer-input" placeholder="Votre réponse">
+    <button onclick="submitAnswer()">Suivant</button>
+  </div>
+
+  <div id="score-box" style="display: none;">
+    <h2>Score final</h2>
+    <p><strong><span id="score"></span> / 100</strong></p>
+  </div>
+
+
+  <script src="exam.js"></script>
+</body>
+</html>
