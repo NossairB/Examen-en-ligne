@@ -4,7 +4,8 @@
   "description": "Projet : Plateforme d’examen en ligne",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -20,8 +21,9 @@
   "homepage": "https://github.com/ZaaAaaG/Examen-en-ligne#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
-    "mongoose": "^8.14.1"
+    "mongoose": "^8.14.2"
   }
 }
