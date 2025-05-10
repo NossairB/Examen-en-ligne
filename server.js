@@ -7,12 +7,17 @@ const Result = require('./models/Result');
 const User = require('./models/User');
 const bcrypt = require('bcrypt');
 
+// 🔐 Middleware de protection
+function requireLogin(req, res, next) {
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+  next();
+}
 
 // 1. Connexion à MongoDB
-mongoose.connect('mongodb://localhost:27017/quiz-app', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log('✅ Connecté à MongoDB'))
+mongoose.connect('mongodb+srv://ZaAaG:ZaaaG240@cluster0.ug6xu2k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+  .then(() => console.log('✅ Connecté à MongoDB'))
   .catch(err => console.error('❌ Erreur de connexion MongoDB:', err));
 
 
@@ -55,10 +60,53 @@ app.post('/register', async (req, res) => {
     await user.save();
     res.status(201).json({ message: 'Inscription réussie' });
   } catch (error) {
+    console.error('❌ Erreur inscription :', error);
     res.status(400).json({ error: 'Erreur lors de l’inscription', details: error.message });
   }
 });
 
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.post('/login', async (req, res) => {
+  const { email, motDePasse } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ message: "Utilisateur non trouvé" });
+    }
+
+    const match = await bcrypt.compare(motDePasse, user.motDePasse);
+    if (!match) {
+      return res.status(401).json({ message: "Mot de passe incorrect" });
+    }
+
+    // Connexion réussie → on stocke l'utilisateur en session
+    req.session.userId = user._id;
+    req.session.userRole = user.role;
+
+    res.status(200).json({ message: "Connexion réussie !" });
+  } catch (error) {
+    console.error('❌ Erreur connexion :', error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+// ✅ Route déconnexion
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
+});
+
+// ✅ Route protégée (dashboard par exemple)
+app.get('/dashboard', requireLogin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
 
 app.post('/submit', async (req, res) => {
   try {
@@ -78,7 +126,6 @@ app.post('/submit', async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de l’enregistrement.' });
   }
 });
-
 
 // 4. Lancement du serveur
 app.listen(3000, () => {

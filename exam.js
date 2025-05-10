@@ -53,6 +53,7 @@ async function envoyerDonnees(answers) {
       body: JSON.stringify({ userId, answers, score: scoreToSend, geolocation })
     });
 
+    
     const data = await response.json();
     alert(data.message);
   }, (error) => {
