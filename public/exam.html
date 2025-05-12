@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Examen</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .question {
+      font-weight: 600;
+      color: #34495e;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background-color: #ecf0f1;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="examTitle">Chargement...</h1>
+    <div class="section"><strong>Description :</strong> <span id="examDescription"></span></div>
+    <div class="section"><strong>Public :</strong> <span id="examTarget"></span></div>
+    <div class="section"><strong>Durée :</strong> <span id="examDuration"></span> secondes</div>
+    <div class="section"><strong>Note :</strong> <span id="examNote"></span></div>
+
+    <div class="section" id="questionSection">
+      <div class="question" id="examStatement"></div>
+      <div id="examTypeFields"></div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const examId = params.get("id");
+
+    fetch(`http://localhost:3000/api/exams/${examId}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("examTitle").textContent = data.title;
+        document.getElementById("examDescription").textContent = data.description;
+        document.getElementById("examTarget").textContent = data.target;
+        document.getElementById("examDuration").textContent = data.duration;
+        document.getElementById("examNote").textContent = data.note;
+        document.getElementById("examStatement").textContent = data.statement;
+
+        const container = document.getElementById("examTypeFields");
+
+        if (data.type === "direct") {
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>Réponse attendue :</strong> ${data.answer || "(non précisée)"}`;
+          container.appendChild(p);
+          if (data.tolerance) {
+            const t = document.createElement("p");
+            t.innerHTML = `<strong>Tolérance :</strong> ${data.tolerance}%`;
+            container.appendChild(t);
+          }
+        } else if (data.type === "qcm") {
+          const ul = document.createElement("ul");
+          data.options?.forEach((opt, i) => {
+            const li = document.createElement("li");
+            const isCorrect = data.correctAnswers?.includes(i);
+            li.textContent = opt + (isCorrect ? " ✅" : "");
+            ul.appendChild(li);
+          });
+          container.appendChild(ul);
+        }
+      })
+      .catch(err => {
+        document.querySelector(".container").innerHTML = "<p>Erreur : Examen introuvable.</p>";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

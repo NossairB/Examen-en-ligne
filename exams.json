@@ -1,0 +1,74 @@
+[
+  {
+    "title": "mathematique",
+    "description": "facile",
+    "target": "les etudiants",
+    "type": "qcm",
+    "statement": "1+5=?",
+    "note": 1,
+    "duration": 5,
+    "options": [
+      "6",
+      "7",
+      "8"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "id": 1
+  },
+  {
+    "title": "mathematique",
+    "description": "facile",
+    "target": "les etudiants",
+    "type": "qcm",
+    "statement": "1+2=?",
+    "note": 1,
+    "duration": 5,
+    "options": [
+      "3",
+      "18",
+      "2"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "id": 2
+  },
+  {
+    "title": "mathematique",
+    "description": "facile",
+    "target": "les etudiants",
+    "type": "qcm",
+    "statement": "1+5=?",
+    "note": 1,
+    "duration": 5,
+    "options": [
+      "6",
+      "7",
+      "8"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "id": 3
+  },
+  {
+    "title": "mathematique",
+    "description": "facile",
+    "target": "les etudiants",
+    "type": "qcm",
+    "statement": "1+3=?",
+    "note": 1,
+    "duration": 5,
+    "options": [
+      "4",
+      "6",
+      "7"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "id": 4
+  }
+]

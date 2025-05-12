@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plateforme d'Examen en Ligne</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 5px;
+    }
+    input[type="text"], input[type="password"], input[type="email"], input[type="date"], select {
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .toggle {
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Connexion / Inscription</h2>
+
+    <!-- Formulaire de connexion -->
+    <div id="loginForm" class="formContainer">
+      <form id="login" action="javascript:void(0);">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Se connecter</button>
+      </form>
+      <div class="toggle">
+        <p>Pas encore inscrit ? <a href="javascript:void(0);" onclick="toggleForm('register')">S'inscrire ici</a></p>
+      </div>
+    </div>
+
+    <!-- Formulaire d'inscription -->
+    <div id="registerForm" class="formContainer" style="display: none;">
+      <form id="register" action="javascript:void(0);">
+        <label for="firstName">Prénom</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="lastName">Nom</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="emailRegister">Email</label>
+        <input type="email" id="emailRegister" name="email" required>
+
+        <label for="passwordRegister">Mot de passe</label>
+        <input type="password" id="passwordRegister" name="password" required>
+
+        <label for="birthDate">Date de naissance</label>
+        <input type="date" id="birthDate" name="birthDate" required>
+        
+        <label for="sex">Sexe</label>
+        <select id="sex" name="sex" required>
+          <option value="">-- Sélectionnez --</option>
+          <option value="homme">Homme</option>
+          <option value="femme">Femme</option>
+        </select>
+
+        <label for="school">Établissement</label>
+        <input type="text" id="school" name="school" required>
+
+        <label for="field">Filière</label>
+        <input type="text" id="field" name="field" required>
+        
+        <label for="userType">Type d'utilisateur</label>
+        <select id="userType" name="userType" required>
+          <option value="student">Étudiant</option>
+          <option value="teacher">Enseignant</option>
+        </select>
+
+        <button type="submit">S'inscrire</button>
+      </form>
+      <div class="toggle">
+        <p>Déjà inscrit ? <a href="javascript:void(0);" onclick="toggleForm('login')">Se connecter ici</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleForm(formType) {
+      if (formType === 'register') {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+      } else {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('registerForm').style.display = 'none';
+      }
+    }
+
+    // Pour la connexion
+    document.getElementById("login").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      // Simuler une requête pour la connexion
+      console.log("Connexion avec les données :", data);
+      alert("Connexion simulée réussie !");
+
+      // Redirection après la connexion simulée
+      window.location.href = "create-exam.html";  // Assurez-vous que cette page existe dans le même dossier
+    });
+
+    // Pour l'inscription
+    document.getElementById("register").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      // Simuler une requête pour l'inscription
+      console.log("Inscription avec les données :", data);
+      alert("Inscription simulée réussie !");
+
+      // Redirection après l'inscription simulée
+      window.location.href = "create-exam.html";  // Assurez-vous que cette page existe dans le même dossier
+    });
+  </script>
+
+</body>
+</html>

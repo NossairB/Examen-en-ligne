@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Créer un Examen</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    form {
+      max-width: 600px;
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin: 20px auto;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
+    #description,
+    #statement {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      padding: 12px 20px;
+      margin-top: 25px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .option-item input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      margin-right: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .remove-btn {
+      background: transparent;
+      border: none;
+      color: #e74c3c;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #add-option-btn {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #add-option-btn:hover {
+      background-color: #2980b9;
+    }
+
+    #examLink {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    #examLink a {
+      color: #27ae60;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    #examLink a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Créer un Examen</h1>
+
+  <form id="examForm">
+    <label for="title">Titre de l'examen :</label>
+    <input type="text" id="title" name="title" required />
+
+    <label for="description">Description de l'examen :</label>
+    <textarea id="description" name="description" required></textarea>
+
+    <label for="target">Public Ciblé :</label>
+    <input type="text" id="target" name="target" required />
+
+    <label for="type">Type de question :</label>
+    <select id="type" name="type">
+      <option value="direct">Question directe</option>
+      <option value="qcm">QCM</option>
+    </select>
+
+    <label for="statement">Énoncé :</label>
+    <textarea id="statement" name="statement"></textarea>
+
+    <div id="directQuestionFields" style="display:none;">
+      <label for="answer">Réponse :</label>
+      <input type="text" id="answer" name="answer" />
+
+      <label for="tolerance">Tolérance :</label>
+      <input type="number" id="tolerance" name="tolerance" min="0" max="100" />
+    </div>
+
+    <div id="qcmFields" style="display:none;">
+      <label>Options :</label>
+      <div id="options-container"></div>
+      <button type="button" id="add-option-btn">Ajouter une option</button>
+
+      <label for="correct-answer">Réponse correcte :</label>
+      <select id="correct-answer"></select>
+    </div>
+
+    <label for="note">Note :</label>
+    <input type="number" id="note" name="note" min="0" max="100" />
+
+    <label for="duration">Durée (en secondes) :</label>
+    <input type="number" id="duration" name="duration" min="1" />
+
+    <button type="submit">Créer l'examen</button>
+  </form>
+
+  <div id="examLink"></div>
+
+  <script>
+    const typeSelect = document.getElementById("type");
+    const directFields = document.getElementById("directQuestionFields");
+    const qcmFields = document.getElementById("qcmFields");
+    const optionsContainer = document.getElementById("options-container");
+    const correctAnswerSelect = document.getElementById("correct-answer");
+    const addOptionBtn = document.getElementById("add-option-btn");
+
+    function toggleFields() {
+      const value = typeSelect.value;
+      directFields.style.display = value === "direct" ? "block" : "none";
+      qcmFields.style.display = value === "qcm" ? "block" : "none";
+    }
+
+    function updateCorrectAnswerSelect() {
+      correctAnswerSelect.innerHTML = "";
+      const items = document.querySelectorAll(".option-item");
+      items.forEach((item, index) => {
+        const optionText = item.querySelector("input").value || `Option ${index + 1}`;
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = optionText;
+        correctAnswerSelect.appendChild(option);
+      });
+    }
+
+    function addOption(defaultText = "") {
+      const div = document.createElement("div");
+      div.className = "option-item";
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "option";
+      input.value = defaultText;
+      input.placeholder = "Saisir une option";
+
+      input.addEventListener("input", updateCorrectAnswerSelect);
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "remove-btn";
+      removeBtn.innerHTML = "🗑️";
+      removeBtn.onclick = () => {
+        div.remove();
+        updateCorrectAnswerSelect();
+      };
+
+      div.appendChild(input);
+      div.appendChild(removeBtn);
+      optionsContainer.appendChild(div);
+      updateCorrectAnswerSelect();
+    }
+
+    // Initialisation
+    typeSelect.addEventListener("change", toggleFields);
+    toggleFields();
+    addOption("Option 1");
+    addOption("Option 2");
+    addOptionBtn.addEventListener("click", () => addOption());
+
+    document.getElementById("examForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const target = document.getElementById("target").value;
+      const type = typeSelect.value;
+      const statement = document.getElementById("statement").value;
+      const note = parseInt(document.getElementById("note").value, 10);
+      const duration = parseInt(document.getElementById("duration").value, 10);
+
+      const payload = { title, description, target, type, statement, note, duration };
+
+      if (type === "direct") {
+        payload.answer = document.getElementById("answer").value;
+        payload.tolerance = parseInt(document.getElementById("tolerance").value, 10);
+      } else if (type === "qcm") {
+        const options = [];
+        document.querySelectorAll(".option-item input").forEach(input => {
+          options.push(input.value);
+        });
+
+        const correctIndex = correctAnswerSelect.value;
+        payload.options = options;
+        payload.correctAnswers = correctIndex ? [parseInt(correctIndex, 10)] : [];
+      }
+
+      fetch("http://localhost:3000/api/exams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        window.location.href = `/exam.html?id=${data.id}`;
+      })
+      .catch(error => {
+        alert("Erreur lors de la création de l'examen : " + error.message);
+      });
+    });
+  </script>
+</body>
+</html>
